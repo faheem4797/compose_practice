@@ -28,6 +28,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import net.objecthunter.exp4j.ExpressionBuilder
+import java.util.Locale
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,7 +37,8 @@ class MainActivity : ComponentActivity() {
 //        enableEdgeToEdge()
 
         setContent {
-            var textFieldState by remember { mutableStateOf("5+8") }
+            var textFieldState by remember { mutableStateOf("") }
+            var errorField by remember { mutableStateOf("") }
             Column(
                 verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.Bottom),
 
@@ -44,6 +47,16 @@ class MainActivity : ComponentActivity() {
                     .background(Color.DarkGray)
                     .padding(16.dp)
             ) {
+
+                Text(
+                    errorField,
+                    textAlign = TextAlign.Center,
+                    color = Color.Red,
+                    fontSize = 32.sp,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp)
+                    )
                 Text(
                     textFieldState,
                     textAlign = TextAlign.End,
@@ -54,12 +67,68 @@ class MainActivity : ComponentActivity() {
                         .padding(bottom = 16.dp)
                 )
 
-                AddThreeButtonRow("AC","C","/",true)
+                AddThreeButtonRow(
+                    "AC", "C", "/", true,
+                    buttonPressedNotation = {
 
-                AddDigitRow("7", "8", "9", "*")
-                AddDigitRow("4", "5", "6", "-")
-                AddDigitRow("1", "2", "3", "+")
-                AddThreeButtonRow("0",".","=",false)
+                        when (it) {
+                            "AC" -> {
+                                textFieldState = ""
+                            }
+
+                            "C" -> {
+                                textFieldState = textFieldState.dropLast(1)
+                            }
+
+                            else -> {
+                                textFieldState += it
+                            }
+                        }
+                    },
+                )
+                AddDigitRow(
+                    "7", "8", "9", "*",
+                    buttonPressedNotation = {
+                        textFieldState += it
+                    },
+                )
+                AddDigitRow(
+                    "4", "5", "6", "-",
+                    buttonPressedNotation = {
+                        textFieldState += it
+                    },
+                )
+                AddDigitRow("1", "2", "3", "+",
+                    buttonPressedNotation = {
+                        textFieldState += it
+                    })
+                AddThreeButtonRow(
+                    "0", ".", "=", false,
+                    buttonPressedNotation = {
+                        if (it == "=") {
+
+                            try{
+                                val result =
+                                    ExpressionBuilder(textFieldState).build().evaluate()
+                                val str = String.format(Locale.US,"%.2f", result)
+                                textFieldState = if (str.contains(".")) {
+                                    str.trimEnd('0').trimEnd('.') // Remove trailing zeros and decimal point if necessary
+                                }else{
+                                    str
+                                }
+                                errorField = ""
+                            }catch (e: Exception){
+                                textFieldState = ""
+                                errorField = "Error Occurred"
+                            }
+
+
+                        } else {
+                            textFieldState += it
+                        }
+
+                    },
+                )
             }
 
 
@@ -73,6 +142,7 @@ fun AddThreeButtonRow(
     second: String,
     operator: String,
     isTopRow: Boolean,
+    buttonPressedNotation: (String) -> Unit,
 ) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(4.dp),
@@ -81,27 +151,32 @@ fun AddThreeButtonRow(
             .height(72.dp)
     ) {
         Button(
-            onClick = {},
+            onClick = {
+                buttonPressedNotation(first)
+            },
             colors = ButtonDefaults
                 .buttonColors
-                    (containerColor = if (isTopRow)  Color.Gray else Color.Black  ),
+                    (containerColor = if (isTopRow) Color.Gray else Color.Black),
             modifier = Modifier
                 .weight(2f)
                 .fillMaxHeight()
         ) { Text(first, fontSize = 24.sp, fontWeight = FontWeight.Bold) }
         Button(
-            onClick = {},
-
+            onClick = {
+                buttonPressedNotation(second)
+            },
             modifier = Modifier
                 .weight(1f)
                 .fillMaxHeight(),
             colors = ButtonDefaults
                 .buttonColors
-                    (containerColor = if (isTopRow)  Color.Gray else Color.Black  ),
+                    (containerColor = if (isTopRow) Color.Gray else Color.Black),
 
             ) { Text(second, fontSize = 24.sp, fontWeight = FontWeight.Bold) }
         Button(
-            onClick = {},
+            onClick = {
+                buttonPressedNotation(operator)
+            },
             modifier = Modifier
                 .weight(1f)
                 .fillMaxHeight(),
@@ -119,6 +194,7 @@ fun AddDigitRow(
     secondDigit: String,
     thirdDigit: String,
     operator: String,
+    buttonPressedNotation: (String) -> Unit,
 ) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(4.dp),
@@ -128,7 +204,9 @@ fun AddDigitRow(
     ) {
 
         Button(
-            onClick = {},
+            onClick = {
+                buttonPressedNotation(firstDigit)
+            },
             modifier = Modifier
                 .weight(1f)
                 .fillMaxHeight(),
@@ -140,7 +218,9 @@ fun AddDigitRow(
             Text(firstDigit, fontSize = 24.sp, fontWeight = FontWeight.Bold)
         }
         Button(
-            onClick = {},
+            onClick = {
+                buttonPressedNotation(secondDigit)
+            },
             modifier = Modifier
                 .weight(1f)
                 .fillMaxHeight(),
@@ -152,7 +232,9 @@ fun AddDigitRow(
             Text(secondDigit, fontSize = 24.sp, fontWeight = FontWeight.Bold)
         }
         Button(
-            onClick = {},
+            onClick = {
+                buttonPressedNotation(thirdDigit)
+            },
             modifier = Modifier
                 .weight(1f)
                 .fillMaxHeight(),
@@ -164,7 +246,9 @@ fun AddDigitRow(
             Text(thirdDigit, fontSize = 24.sp, fontWeight = FontWeight.Bold)
         }
         Button(
-            onClick = {},
+            onClick = {
+                buttonPressedNotation(operator)
+            },
             modifier = Modifier
                 .weight(1f)
                 .fillMaxHeight(),
