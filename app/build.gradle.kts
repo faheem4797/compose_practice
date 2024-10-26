@@ -58,5 +58,6 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation (libs.androidx.constraintlayout.compose)
     implementation (libs.exp4j)
+    implementation (libs.androidx.core.splashscreen)
 
 }
