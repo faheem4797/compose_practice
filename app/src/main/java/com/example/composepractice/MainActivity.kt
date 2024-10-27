@@ -1,8 +1,12 @@
 package com.example.composepractice
 
+import android.content.Context
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,10 +16,21 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarColors
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -24,11 +39,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.example.composepractice.ui.theme.ComposePracticeTheme
+import com.example.composepractice.ui.theme.GreenPracticeCompose
 import net.objecthunter.exp4j.ExpressionBuilder
 import java.util.Locale
 
@@ -38,103 +58,53 @@ class MainActivity : ComponentActivity() {
 //        enableEdgeToEdge()
         installSplashScreen()
         setContent {
-            var textFieldState by remember { mutableStateOf("") }
-            var errorField by remember { mutableStateOf("") }
-            Column(
-                verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.Bottom),
 
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.DarkGray)
-                    .padding(16.dp)
-            ) {
-
-                Text(
-                    errorField,
-                    textAlign = TextAlign.Center,
-                    color = Color.Red,
-                    fontSize = 32.sp,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 16.dp)
-                    )
-                Text(
-                    textFieldState,
-                    textAlign = TextAlign.End,
-                    color = Color.White,
-                    fontSize = 32.sp,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 16.dp)
-                )
-
-                AddThreeButtonRow(
-                    "AC", "C", "/", true,
-                    buttonPressedNotation = {
-
-                        when (it) {
-                            "AC" -> {
-                                textFieldState = ""
-                            }
-
-                            "C" -> {
-                                textFieldState = textFieldState.dropLast(1)
-                            }
-
-                            else -> {
-                                textFieldState += it
-                            }
-                        }
-                    },
-                )
-                AddDigitRow(
-                    "7", "8", "9", "*",
-                    buttonPressedNotation = {
-                        textFieldState += it
-                    },
-                )
-                AddDigitRow(
-                    "4", "5", "6", "-",
-                    buttonPressedNotation = {
-                        textFieldState += it
-                    },
-                )
-                AddDigitRow("1", "2", "3", "+",
-                    buttonPressedNotation = {
-                        textFieldState += it
-                    })
-                AddThreeButtonRow(
-                    "0", ".", "=", false,
-                    buttonPressedNotation = {
-                        if (it == "=") {
-
-                            try{
-                                val result =
-                                    ExpressionBuilder(textFieldState).build().evaluate()
-                                val str = String.format(Locale.US,"%.2f", result)
-                                textFieldState = if (str.contains(".")) {
-                                    str.trimEnd('0').trimEnd('.') // Remove trailing zeros and decimal point if necessary
-                                }else{
-                                    str
-                                }
-                                errorField = ""
-                            }catch (e: Exception){
-                                textFieldState = ""
-                                errorField = "Error Occurred"
-                            }
-
-
-                        } else {
-                            textFieldState += it
-                        }
-
-                    },
-                )
-            }
-
-
+            ComposePracticeTheme { AppBar() }
         }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AppBar() {
+    val contextHere = LocalContext.current.applicationContext
+    TopAppBar(
+        title = { Text("WhatsApp") },
+        navigationIcon = {
+            IconButton(onClick = {
+                Toast.makeText(contextHere, "WhatsApp", Toast.LENGTH_SHORT).show()
+            }) {
+                Image(
+                    painter = painterResource(R.drawable.whatsapp),
+                    contentDescription = "whatsapp icon",
+                    colorFilter = ColorFilter.tint(Color.White),
+                    modifier = Modifier.size(24.dp)
+                )
+            }
+        },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = GreenPracticeCompose,
+            titleContentColor = Color.White,
+            navigationIconContentColor = Color.White
+        ),
+        actions = {
+            IconButton(onClick = {
+                Toast.makeText(contextHere, "Profile", Toast.LENGTH_SHORT).show()
+            }) {
+                Icon(imageVector = Icons.Filled.Person, contentDescription = "Profile Icon", tint = Color.White)
+            }
+            IconButton(onClick = {
+                Toast.makeText(contextHere, "Search", Toast.LENGTH_SHORT).show()
+            }) {
+                Icon(imageVector = Icons.Filled.Search, contentDescription = "Search Icon", tint = Color.White)
+            }
+            IconButton(onClick = {
+                Toast.makeText(contextHere, "Menu", Toast.LENGTH_SHORT).show()
+            }) {
+                Icon(imageVector = Icons.Filled.MoreVert, contentDescription = "Menu Icon", tint = Color.White)
+            }
+        }
+    )
 }
 
 @Composable
