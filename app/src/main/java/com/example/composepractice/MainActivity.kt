@@ -9,9 +9,13 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.add
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -22,13 +26,18 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DrawerValue
@@ -38,6 +47,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
@@ -46,14 +56,18 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -87,6 +101,7 @@ class MainActivity : ComponentActivity() {
 }
 
 //@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyBottomAppBar() {
     val navigationController = rememberNavController()
@@ -94,6 +109,8 @@ fun MyBottomAppBar() {
     val selected = remember {
         mutableStateOf(Icons.Default.Home)
     }
+    val sheetState = rememberModalBottomSheetState()
+    var showBottomSheet by remember { mutableStateOf(false) }
     Scaffold(bottomBar = {
         BottomAppBar(
             containerColor = GreenPracticeCompose
@@ -138,7 +155,9 @@ fun MyBottomAppBar() {
                     .padding(16.dp),
             ) {
                 FloatingActionButton(onClick = {
-                    Toast.makeText(context, "Open Bottom Sheet", Toast.LENGTH_SHORT).show()
+                    showBottomSheet = true
+
+
                 }, modifier = Modifier.align(Alignment.Center)) {
                     Icon(
                         imageVector = Icons.Default.Add,
@@ -192,9 +211,65 @@ fun MyBottomAppBar() {
             composable(Screens.Home.screen) { Home() }
             composable(Screens.Profile.screen) { Profile() }
             composable(Screens.Settings.screen) { Settings() }
-            composable(Screens.Notifications.screen) { Notifications()  }
+            composable(Screens.Notifications.screen) { Notifications() }
+            composable(Screens.Post.screen) { Post()  }
         }
 
+    }
+    if (showBottomSheet) {
+        ModalBottomSheet(
+            onDismissRequest = { showBottomSheet = false },
+            sheetState = sheetState,
+            windowInsets = BottomSheetDefaults.windowInsets.add(WindowInsets(left = 0.dp, right = 0.dp, top = 0.dp, bottom = 50.dp))
+            ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(18.dp),
+                verticalArrangement = Arrangement.spacedBy(20.dp)
+            ) {
+                BottomSheetItem(
+                    icon = Icons.Default.ThumbUp, title = "Create a Post",
+                    ) {
+                    showBottomSheet = false
+                    navigationController.navigate(Screens.Post.screen) {
+                        popUpTo(0)
+                    }
+                }
+                BottomSheetItem(
+                    icon = Icons.Default.Star, title = "Add a Story",
+                ) {
+                    showBottomSheet = false
+                    Toast.makeText(context,"Add a Story",Toast.LENGTH_SHORT).show()
+                }
+                BottomSheetItem(
+                    icon = Icons.Default.PlayArrow, title = "Create a Reel",
+                ) {
+                    showBottomSheet = false
+                    Toast.makeText(context,"Create a Reel",Toast.LENGTH_SHORT).show()
+                }
+                BottomSheetItem(
+                    icon = Icons.Default.Favorite, title = "Go Live",
+                ) {
+                    showBottomSheet = false
+                    Toast.makeText(context,"Go Live",Toast.LENGTH_SHORT).show()
+                }
+
+            }
+
+        }
+    }
+}
+
+@Composable
+fun BottomSheetItem(icon: ImageVector, title: String, onClick: () -> Unit) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        modifier = Modifier.clickable { onClick() }
+    ) {
+        Icon(icon, contentDescription = null, tint = GreenPracticeCompose)
+        Text(text = title, color = GreenPracticeCompose, fontSize = 22.sp)
     }
 }
 

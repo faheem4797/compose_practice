@@ -5,5 +5,5 @@ sealed class Screens(val screen: String){
     data object Profile: Screens("profile")
     data object Settings: Screens("settings")
     data object Notifications: Screens("notifications")
-
+    data object Post: Screens("post")
 }
