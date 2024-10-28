@@ -94,8 +94,297 @@ class MainActivity : ComponentActivity() {
 //            ComposePracticeTheme { AppBar(){} }
 
             ComposePracticeTheme {
-                MyBottomAppBar()
+                MyApp()
             }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MyApp(){
+    val navigationController = rememberNavController()
+    val context = LocalContext.current.applicationContext
+    val selected = remember {
+        mutableStateOf(Icons.Default.Home)
+    }
+    val sheetState = rememberModalBottomSheetState()
+    var showBottomSheet by remember { mutableStateOf(false) }
+    val coroutineScope = rememberCoroutineScope()
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+
+    ModalNavigationDrawer(
+        drawerContent = {
+            ModalDrawerSheet(
+                modifier = Modifier.padding(0.dp, 0.dp, 50.dp, 0.dp)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .background(GreenPracticeCompose)
+                        .fillMaxWidth()
+                        .height(150.dp)
+                )
+                HorizontalDivider()
+                NavigationDrawerItem(
+                    label = { Text("Home", color = GreenPracticeCompose) },
+                    selected = false,
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Default.Home,
+                            contentDescription = "Home Icon",
+                            tint = GreenPracticeCompose
+                        )
+                    },
+                    onClick = {
+                        coroutineScope.launch {
+                            drawerState.close()
+                        }
+                        selected.value = Icons.Default.Home
+                        navigationController.navigate(Screens.Home.screen) {
+                            popUpTo(0)
+                        }
+                    },
+                )
+                NavigationDrawerItem(
+                    label = { Text("Profile", color = GreenPracticeCompose) },
+                    selected = false,
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Default.Person,
+                            contentDescription = "Profile Icon",
+                            tint = GreenPracticeCompose
+                        )
+                    },
+                    onClick = {
+                        coroutineScope.launch {
+                            drawerState.close()
+                        }
+                        selected.value = Icons.Default.Person
+                        navigationController.navigate(Screens.Profile.screen) {
+                            popUpTo(0)
+                        }
+                    },
+                )
+                NavigationDrawerItem(
+                    label = { Text("Settings", color = GreenPracticeCompose) },
+                    selected = false,
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Default.Home,
+                            contentDescription = "Settings Icon",
+                            tint = GreenPracticeCompose
+                        )
+                    },
+                    onClick = {
+                        coroutineScope.launch {
+                            drawerState.close()
+                        }
+                        selected.value = Icons.Default.Settings
+                        navigationController.navigate(Screens.Settings.screen) {
+                            popUpTo(0)
+                        }
+                    },
+                )
+                NavigationDrawerItem(
+                    label = { Text("Notifications", color = GreenPracticeCompose) },
+                    selected = false,
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Default.Notifications,
+                            contentDescription = "Notifications Icon",
+                            tint = GreenPracticeCompose
+                        )
+                    },
+                    onClick = {
+                        coroutineScope.launch {
+                            drawerState.close()
+                        }
+                        selected.value = Icons.Default.Notifications
+                        navigationController.navigate(Screens.Notifications.screen) {
+                            popUpTo(0)
+                        }
+                    },
+                )
+                NavigationDrawerItem(
+                    label = { Text("Logout", color = GreenPracticeCompose) },
+                    selected = false,
+                    icon = {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ExitToApp,
+                            contentDescription = "Logout Icon",
+                            tint = GreenPracticeCompose
+                        )
+                    },
+                    onClick = {
+                        coroutineScope.launch {
+                            drawerState.close()
+                        }
+                        Toast.makeText(context, "User logged out", Toast.LENGTH_SHORT).show()
+                    },
+                )
+            }
+        },
+        drawerState = drawerState,
+        gesturesEnabled = true,
+    )
+    {
+        Scaffold(
+            topBar = {
+                AppBar(onPressed = {
+                coroutineScope.launch {
+                    drawerState.open()
+                }
+                })
+            },
+            containerColor = MaterialTheme.colorScheme.background,
+
+            bottomBar = {
+                BottomAppBar(
+                    containerColor = GreenPracticeCompose
+                ) {
+                    IconButton(
+                        onClick = {
+                            selected.value = Icons.Default.Home
+                            navigationController.navigate(Screens.Home.screen) {
+                                popUpTo(0)
+                            }
+                        },
+                        modifier = Modifier.weight(1f),
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Home,
+                            contentDescription = "Home Icon",
+                            modifier = Modifier.size(26.dp),
+                            tint = if (selected.value == Icons.Default.Home) Color.White else Color.DarkGray
+                        )
+                    }
+                    IconButton(
+                        onClick = {
+                            selected.value = Icons.Default.Settings
+                            navigationController.navigate(Screens.Settings.screen) {
+                                popUpTo(0)
+                            }
+                        },
+                        modifier = Modifier.weight(1f),
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Settings,
+                            contentDescription = "Settings Icon",
+                            modifier = Modifier.size(26.dp),
+                            tint = if (selected.value == Icons.Default.Settings) Color.White else Color.DarkGray
+                        )
+                    }
+                    //
+                    //
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(16.dp),
+                    ) {
+                        FloatingActionButton(onClick = {
+                            showBottomSheet = true
+
+
+                        }, modifier = Modifier.align(Alignment.Center)) {
+                            Icon(
+                                imageVector = Icons.Default.Add,
+                                contentDescription = "Add Icon",
+                                tint = GreenPracticeCompose
+                            )
+                        }
+                    }
+                    //
+                    //
+                    IconButton(
+                        onClick = {
+                            selected.value = Icons.Default.Person
+                            navigationController.navigate(Screens.Profile.screen) {
+                                popUpTo(0)
+                            }
+                        },
+                        modifier = Modifier.weight(1f),
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Person,
+                            contentDescription = "Profile Icon",
+                            modifier = Modifier.size(26.dp),
+                            tint = if (selected.value == Icons.Default.Person) Color.White else Color.DarkGray
+                        )
+                    }
+
+                    IconButton(
+                        onClick = {
+                            selected.value = Icons.Default.Notifications
+                            navigationController.navigate(Screens.Notifications.screen) {
+                                popUpTo(0)
+                            }
+                        },
+                        modifier = Modifier.weight(1f),
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Notifications,
+                            contentDescription = "Notifications Icon",
+                            modifier = Modifier.size(26.dp),
+                            tint = if (selected.value == Icons.Default.Notifications) Color.White else Color.DarkGray
+                        )
+                    }
+                }
+            }) { paddingValues ->
+            NavHost(
+                navController = navigationController,
+                startDestination = Screens.Home.screen,
+                modifier = Modifier.padding(paddingValues)
+            ) {
+                composable(Screens.Home.screen) { Home() }
+                composable(Screens.Profile.screen) { Profile() }
+                composable(Screens.Settings.screen) { Settings() }
+                composable(Screens.Notifications.screen) { Notifications() }
+                composable(Screens.Post.screen) { Post() }
+            }
+
+        }
+    }
+    if (showBottomSheet) {
+        ModalBottomSheet(
+            onDismissRequest = { showBottomSheet = false },
+            sheetState = sheetState,
+            windowInsets = BottomSheetDefaults.windowInsets.add(WindowInsets(left = 0.dp, right = 0.dp, top = 0.dp, bottom = 50.dp))
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(18.dp),
+                verticalArrangement = Arrangement.spacedBy(20.dp)
+            ) {
+                BottomSheetItem(
+                    icon = Icons.Default.ThumbUp, title = "Create a Post",
+                ) {
+                    showBottomSheet = false
+                    navigationController.navigate(Screens.Post.screen) {
+                        popUpTo(0)
+                    }
+                }
+                BottomSheetItem(
+                    icon = Icons.Default.Star, title = "Add a Story",
+                ) {
+                    showBottomSheet = false
+                    Toast.makeText(context,"Add a Story",Toast.LENGTH_SHORT).show()
+                }
+                BottomSheetItem(
+                    icon = Icons.Default.PlayArrow, title = "Create a Reel",
+                ) {
+                    showBottomSheet = false
+                    Toast.makeText(context,"Create a Reel",Toast.LENGTH_SHORT).show()
+                }
+                BottomSheetItem(
+                    icon = Icons.Default.Favorite, title = "Go Live",
+                ) {
+                    showBottomSheet = false
+                    Toast.makeText(context,"Go Live",Toast.LENGTH_SHORT).show()
+                }
+
+            }
+
         }
     }
 }
