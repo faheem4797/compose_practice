@@ -43,7 +43,7 @@ fun ComposePracticeTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     val colorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
@@ -56,10 +56,9 @@ fun ComposePracticeTheme(
     }
 
     val view = LocalView.current
-    if(!view.isInEditMode){
+    if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-//            window.statusBarColor = colorScheme.primary.toArgb()
             window.statusBarColor = GreenPracticeCompose.toArgb()
             window.navigationBarColor = GreenPracticeCompose.toArgb()
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars =

@@ -59,5 +59,5 @@ dependencies {
     implementation (libs.androidx.constraintlayout.compose)
     implementation (libs.exp4j)
     implementation (libs.androidx.core.splashscreen)
-
+    implementation (libs.androidx.navigation.compose)
 }
