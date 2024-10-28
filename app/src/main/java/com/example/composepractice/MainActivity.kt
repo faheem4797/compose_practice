@@ -13,10 +13,12 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.add
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -28,6 +30,7 @@ import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
@@ -51,8 +54,11 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
@@ -65,16 +71,21 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -94,15 +105,130 @@ class MainActivity : ComponentActivity() {
 //            ComposePracticeTheme { AppBar(){} }
 
             ComposePracticeTheme {
-                MyApp()
+                Box(
+                    modifier = Modifier.fillMaxSize()
+                        .paint(
+                            painterResource(R.drawable.zombatar),
+                            contentScale = ContentScale.FillBounds
+                        )
+                ){
+                    val navigationController = rememberNavController()
+                    NavGraphMaker(navigationController)
+                }
             }
         }
     }
 }
 
+@Composable
+fun LoginScreen(onLoginSuccess: () -> Unit) {
+    var username by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    val context = LocalContext.current.applicationContext
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 26.dp, vertical = 140.dp),
+        verticalArrangement = Arrangement.Bottom,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        OutlinedTextField(
+            value = username,
+            onValueChange = {
+                username = it
+            }, label = { Text("Username") },
+            shape = RoundedCornerShape(20.dp),
+            colors = TextFieldDefaults.colors(
+                focusedTextColor = Color.Black,
+                unfocusedTextColor = Color.Black,
+                focusedLeadingIconColor = GreenPracticeCompose,
+                unfocusedLeadingIconColor = GreenPracticeCompose,
+                focusedLabelColor = GreenPracticeCompose,
+                unfocusedLabelColor = GreenPracticeCompose,
+                focusedContainerColor = Color.White,
+                unfocusedContainerColor = Color.White,
+                focusedIndicatorColor = GreenPracticeCompose,
+                unfocusedIndicatorColor = GreenPracticeCompose,
+                unfocusedPlaceholderColor = GreenPracticeCompose
+            ),
+            leadingIcon = {
+                Icon(imageVector = Icons.Default.Person, contentDescription = null)
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 8.dp)
+        )
+        OutlinedTextField(
+            value = password,
+            onValueChange = {
+                password = it
+            }, label = { Text("Password") },
+            shape = RoundedCornerShape(20.dp),
+            colors = TextFieldDefaults.colors(
+                focusedTextColor = Color.Black,
+                unfocusedTextColor = Color.Black,
+                focusedLeadingIconColor = GreenPracticeCompose,
+                unfocusedLeadingIconColor = GreenPracticeCompose,
+                focusedLabelColor = GreenPracticeCompose,
+                unfocusedLabelColor = GreenPracticeCompose,
+                focusedContainerColor = Color.White,
+                unfocusedContainerColor = Color.White,
+                focusedIndicatorColor = GreenPracticeCompose,
+                unfocusedIndicatorColor = GreenPracticeCompose,
+                unfocusedPlaceholderColor = GreenPracticeCompose
+            ),
+            leadingIcon = {
+                Icon(imageVector = Icons.Default.Lock, contentDescription = null)
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 8.dp),
+            visualTransformation = PasswordVisualTransformation()
+        )
+        Button(
+            onClick = {
+                if (authenticate(username = username, password = password)) {
+                    onLoginSuccess()
+                    Toast.makeText(context, "Login Successful", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(context, "Invalid Credentials", Toast.LENGTH_SHORT).show()
+
+                }
+            },
+            colors = ButtonDefaults.buttonColors(
+                GreenPracticeCompose, Color.White
+            ),
+            contentPadding = PaddingValues(horizontal = 60.dp, vertical = 8.dp),
+            modifier = Modifier.padding(top = 18.dp)
+        ) {
+            Text("Login", fontSize = 22.sp)
+        }
+    }
+}
+
+@Composable
+fun NavGraphMaker(navigationController: NavHostController) {
+    NavHost(navController = navigationController,
+        startDestination = "login") {
+        composable("login") { LoginScreen ( onLoginSuccess = {
+            navigationController.navigate("home"){
+                popUpTo(0)
+            }
+        } ) }
+        composable("home") { Home() }
+    }
+}
+
+private fun authenticate(username: String, password: String): Boolean {
+    val validUsername = "admin"
+    val validPassword = "admin123"
+    return username == validUsername && password == validPassword
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyApp(){
+fun MyApp() {
     val navigationController = rememberNavController()
     val context = LocalContext.current.applicationContext
     val selected = remember {
@@ -231,9 +357,9 @@ fun MyApp(){
         Scaffold(
             topBar = {
                 AppBar(onPressed = {
-                coroutineScope.launch {
-                    drawerState.open()
-                }
+                    coroutineScope.launch {
+                        drawerState.open()
+                    }
                 })
             },
             containerColor = MaterialTheme.colorScheme.background,
@@ -348,7 +474,14 @@ fun MyApp(){
         ModalBottomSheet(
             onDismissRequest = { showBottomSheet = false },
             sheetState = sheetState,
-            windowInsets = BottomSheetDefaults.windowInsets.add(WindowInsets(left = 0.dp, right = 0.dp, top = 0.dp, bottom = 50.dp))
+            windowInsets = BottomSheetDefaults.windowInsets.add(
+                WindowInsets(
+                    left = 0.dp,
+                    right = 0.dp,
+                    top = 0.dp,
+                    bottom = 50.dp
+                )
+            )
         ) {
             Column(
                 modifier = Modifier
@@ -368,19 +501,19 @@ fun MyApp(){
                     icon = Icons.Default.Star, title = "Add a Story",
                 ) {
                     showBottomSheet = false
-                    Toast.makeText(context,"Add a Story",Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Add a Story", Toast.LENGTH_SHORT).show()
                 }
                 BottomSheetItem(
                     icon = Icons.Default.PlayArrow, title = "Create a Reel",
                 ) {
                     showBottomSheet = false
-                    Toast.makeText(context,"Create a Reel",Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Create a Reel", Toast.LENGTH_SHORT).show()
                 }
                 BottomSheetItem(
                     icon = Icons.Default.Favorite, title = "Go Live",
                 ) {
                     showBottomSheet = false
-                    Toast.makeText(context,"Go Live",Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Go Live", Toast.LENGTH_SHORT).show()
                 }
 
             }
@@ -501,7 +634,7 @@ fun MyBottomAppBar() {
             composable(Screens.Profile.screen) { Profile() }
             composable(Screens.Settings.screen) { Settings() }
             composable(Screens.Notifications.screen) { Notifications() }
-            composable(Screens.Post.screen) { Post()  }
+            composable(Screens.Post.screen) { Post() }
         }
 
     }
@@ -509,8 +642,15 @@ fun MyBottomAppBar() {
         ModalBottomSheet(
             onDismissRequest = { showBottomSheet = false },
             sheetState = sheetState,
-            windowInsets = BottomSheetDefaults.windowInsets.add(WindowInsets(left = 0.dp, right = 0.dp, top = 0.dp, bottom = 50.dp))
-            ) {
+            windowInsets = BottomSheetDefaults.windowInsets.add(
+                WindowInsets(
+                    left = 0.dp,
+                    right = 0.dp,
+                    top = 0.dp,
+                    bottom = 50.dp
+                )
+            )
+        ) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -519,7 +659,7 @@ fun MyBottomAppBar() {
             ) {
                 BottomSheetItem(
                     icon = Icons.Default.ThumbUp, title = "Create a Post",
-                    ) {
+                ) {
                     showBottomSheet = false
                     navigationController.navigate(Screens.Post.screen) {
                         popUpTo(0)
@@ -529,19 +669,19 @@ fun MyBottomAppBar() {
                     icon = Icons.Default.Star, title = "Add a Story",
                 ) {
                     showBottomSheet = false
-                    Toast.makeText(context,"Add a Story",Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Add a Story", Toast.LENGTH_SHORT).show()
                 }
                 BottomSheetItem(
                     icon = Icons.Default.PlayArrow, title = "Create a Reel",
                 ) {
                     showBottomSheet = false
-                    Toast.makeText(context,"Create a Reel",Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Create a Reel", Toast.LENGTH_SHORT).show()
                 }
                 BottomSheetItem(
                     icon = Icons.Default.Favorite, title = "Go Live",
                 ) {
                     showBottomSheet = false
-                    Toast.makeText(context,"Go Live",Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Go Live", Toast.LENGTH_SHORT).show()
                 }
 
             }
