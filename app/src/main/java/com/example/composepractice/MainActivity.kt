@@ -89,6 +89,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.ChainStyle
+import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
@@ -107,69 +109,15 @@ class MainActivity : ComponentActivity() {
         setContent {
 
             ComposePracticeTheme {
-                val fruitsList = listOf(
-                    "Banana",
-                    "Apple",
-                    "Mango",
-                    "Banana",
-                    "Apple",
-                    "Mango",
-                    "Banana",
-                    "Apple",
-                    "Mango",
-                    "Banana",
-                    "Apple",
-                    "Mango",
-                    "Banana",
-                    "Apple",
-                    "Mango",
-                    "Banana",
-                    "Apple",
-                    "Mango",
-                    "Banana",
-                    "Apple",
-                    "Mango",
-                    "Banana",
-                    "Apple",
-                    "Mango",
-                    "Banana",
-                    "Apple",
-                    "Mango",
-                    "Banana",
-                    "Apple",
-                    "Mango",
-                    "Banana",
-                    "Apple",
-                    "Mango",
-                    "Banana",
-                    "Apple",
-                    "Mango",
-                    "Banana",
-                    "Apple",
-                    "Mango",
-                    "Banana",
-                    "Apple",
-                    "Mango",
-                    "Banana",
-                    "Apple",
-                    "Mango",
-                    "Banana",
-                    "Apple",
-                    "Mango",
-                    "Banana",
-                    "Apple",
-                    "Mango",
-                    "Banana",
-                    "Apple",
-                    "Mango",
-                    "Banana",
-                    "Apple",
-                    "Mango",
-                    "Banana",
-                    "Apple",
-                    "Mango",
-                )
-                DisplayList(fruitsList)
+                LearnConstraintLayout()
+//                val fruitsList = listOf(
+//                    "Mango",
+//                    "Banana",
+//                    "Apple",
+//                    "Mango",
+//
+//                )
+//                DisplayList(fruitsList)
             }
 
 //            ComposePracticeTheme{ NavDrawer() }
@@ -193,15 +141,62 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun DisplayList(listOfFruits: List<String>) {
-//    val scrollState = rememberScrollState()
-//    Column(modifier = Modifier.verticalScroll(scrollState)) {
-//        listOfFruits.forEach {
-//            Text(it, fontSize = 32.sp, color = Color.Red)
-//        }
-//    }
+fun LearnConstraintLayout() {
 
-    LazyRow () {
+    ConstraintLayout(Modifier.fillMaxSize()) {
+        val (redButton, greenButton, blueButton, blackButton) = createRefs()
+        createHorizontalChain(greenButton, blueButton, chainStyle = ChainStyle.Spread)
+        val guideLineForBlackButton = createGuidelineFromBottom(0.5f)
+        Button(onClick = {},
+            colors = ButtonDefaults.buttonColors(containerColor = Color.Red),
+            modifier = Modifier.constrainAs(redButton) {
+                top.linkTo(parent.top)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+            }
+        ) {
+            Text("Red")
+        }
+
+        Button(onClick = {},
+            colors = ButtonDefaults.buttonColors(containerColor = Color.Green),
+            modifier = Modifier.constrainAs(greenButton) {
+                top.linkTo(redButton.bottom)
+//                    start.linkTo(parent.start)
+//                    end.linkTo(parent.end)
+            }
+        ) {
+            Text("Green")
+        }
+        Button(onClick = {},
+            colors = ButtonDefaults.buttonColors(containerColor = Color.Blue),
+            modifier = Modifier.constrainAs(blueButton) {
+                top.linkTo(redButton.bottom)
+//                    start.linkTo(parent.start)
+//                    end.linkTo(parent.end)
+            }
+        ) {
+            Text("Blue")
+        }
+        Button(onClick = {},
+            colors = ButtonDefaults.buttonColors(containerColor = Color.Black),
+            modifier = Modifier.constrainAs(blackButton) {
+                bottom.linkTo(guideLineForBlackButton)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+            }
+        ) {
+            Text("Black")
+        }
+
+
+    }
+
+}
+
+@Composable
+fun DisplayList(listOfFruits: List<String>) {
+    LazyRow() {
         items(count = listOfFruits.size) {
             Text(listOfFruits[it] + " ", fontSize = 32.sp, color = Color.Red)
         }
