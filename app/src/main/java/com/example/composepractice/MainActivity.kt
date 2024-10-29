@@ -14,8 +14,6 @@ import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.add
@@ -51,6 +49,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -112,8 +111,10 @@ class MainActivity : ComponentActivity() {
 
             ComposePracticeTheme {
 //NavComponenet()
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Counter()
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomEnd) {
+//                    Counter()
+//                    LearnFAB()
+                    LearnExtendedFAB()
                 }
             }
 
@@ -138,16 +139,43 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Counter(myViewModel: MyViewModel = viewModel()){
-
-
-
-    Button(onClick = {
-       myViewModel. incrementCounter()
-    }) {
-        Text("Count: " + myViewModel.count)
+fun LearnFAB(){
+    val context = LocalContext.current.applicationContext
+    FloatingActionButton(
+        modifier = Modifier.padding(16.dp),
+        containerColor = GreenPracticeCompose,
+        onClick = {
+            Toast.makeText(context,"FAB CLICKED", Toast.LENGTH_SHORT).show()
+        }
+    ) {
+        Icon(imageVector = Icons.Filled.Add, contentDescription = null)
     }
 }
+
+@Composable
+fun LearnExtendedFAB(){
+    val context = LocalContext.current.applicationContext
+    ExtendedFloatingActionButton (
+        modifier = Modifier.padding(16.dp),
+        containerColor = GreenPracticeCompose,
+        onClick = {
+            Toast.makeText(context," Extended FAB CLICKED", Toast.LENGTH_SHORT).show()
+        }
+    ) {
+        Icon(imageVector = Icons.Filled.Add, contentDescription = null)
+        Text("FAB")
+    }
+
+}
+
+//@Composable
+//fun Counter(myViewModel: MyViewModel = viewModel()){
+//    Button(onClick = {
+//       myViewModel. incrementCounter()
+//    }) {
+//        Text("Count: " + myViewModel.count)
+//    }
+//}
 
 //@Composable
 //fun NavComponenet(){
