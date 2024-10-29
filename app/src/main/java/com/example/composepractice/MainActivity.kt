@@ -93,6 +93,7 @@ import androidx.constraintlayout.compose.ChainStyle
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -110,7 +111,10 @@ class MainActivity : ComponentActivity() {
         setContent {
 
             ComposePracticeTheme {
-NavComponenet()
+//NavComponenet()
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Counter()
+                }
             }
 
 //            ComposePracticeTheme{ NavDrawer() }
@@ -134,14 +138,26 @@ NavComponenet()
 }
 
 @Composable
-fun NavComponenet(){
-    val navigationController = rememberNavController()
+fun Counter(myViewModel: MyViewModel = viewModel()){
 
-    NavHost( navigationController,startDestination = Screens.Home.screen) {
-        composable(Screens.Home.screen) { Home(navigationController)  }
-        composable(Screens.Profile.screen) { Profile()  }
+
+
+    Button(onClick = {
+       myViewModel. incrementCounter()
+    }) {
+        Text("Count: " + myViewModel.count)
     }
 }
+
+//@Composable
+//fun NavComponenet(){
+//    val navigationController = rememberNavController()
+//
+//    NavHost( navigationController,startDestination = Screens.Home.screen) {
+//        composable(Screens.Home.screen) { Home(navigationController)  }
+//        composable(Screens.Profile.screen) { Profile()  }
+//    }
+//}
 
 //@Composable
 //fun LearnConstraintLayout() {
