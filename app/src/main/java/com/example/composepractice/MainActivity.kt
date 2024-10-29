@@ -10,6 +10,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,7 +26,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.Add
@@ -100,22 +106,104 @@ class MainActivity : ComponentActivity() {
         installSplashScreen()
         setContent {
 
+            ComposePracticeTheme {
+                val fruitsList = listOf(
+                    "Banana",
+                    "Apple",
+                    "Mango",
+                    "Banana",
+                    "Apple",
+                    "Mango",
+                    "Banana",
+                    "Apple",
+                    "Mango",
+                    "Banana",
+                    "Apple",
+                    "Mango",
+                    "Banana",
+                    "Apple",
+                    "Mango",
+                    "Banana",
+                    "Apple",
+                    "Mango",
+                    "Banana",
+                    "Apple",
+                    "Mango",
+                    "Banana",
+                    "Apple",
+                    "Mango",
+                    "Banana",
+                    "Apple",
+                    "Mango",
+                    "Banana",
+                    "Apple",
+                    "Mango",
+                    "Banana",
+                    "Apple",
+                    "Mango",
+                    "Banana",
+                    "Apple",
+                    "Mango",
+                    "Banana",
+                    "Apple",
+                    "Mango",
+                    "Banana",
+                    "Apple",
+                    "Mango",
+                    "Banana",
+                    "Apple",
+                    "Mango",
+                    "Banana",
+                    "Apple",
+                    "Mango",
+                    "Banana",
+                    "Apple",
+                    "Mango",
+                    "Banana",
+                    "Apple",
+                    "Mango",
+                    "Banana",
+                    "Apple",
+                    "Mango",
+                    "Banana",
+                    "Apple",
+                    "Mango",
+                )
+                DisplayList(fruitsList)
+            }
+
 //            ComposePracticeTheme{ NavDrawer() }
 
 //            ComposePracticeTheme { AppBar(){} }
 
-            ComposePracticeTheme {
-                Box(
-                    modifier = Modifier.fillMaxSize()
-                        .paint(
-                            painterResource(R.drawable.zombatar),
-                            contentScale = ContentScale.FillBounds
-                        )
-                ){
-                    val navigationController = rememberNavController()
-                    NavGraphMaker(navigationController)
-                }
-            }
+//            ComposePracticeTheme {
+//                Box(
+//                    modifier = Modifier.fillMaxSize()
+//                        .paint(
+//                            painterResource(R.drawable.zombatar),
+//                            contentScale = ContentScale.FillBounds
+//                        )
+//                ){
+//                    val navigationController = rememberNavController()
+//                    NavGraphMaker(navigationController)
+//                }
+//            }
+        }
+    }
+}
+
+@Composable
+fun DisplayList(listOfFruits: List<String>) {
+//    val scrollState = rememberScrollState()
+//    Column(modifier = Modifier.verticalScroll(scrollState)) {
+//        listOfFruits.forEach {
+//            Text(it, fontSize = 32.sp, color = Color.Red)
+//        }
+//    }
+
+    LazyRow () {
+        items(count = listOfFruits.size) {
+            Text(listOfFruits[it] + " ", fontSize = 32.sp, color = Color.Red)
         }
     }
 }
@@ -209,13 +297,17 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
 
 @Composable
 fun NavGraphMaker(navigationController: NavHostController) {
-    NavHost(navController = navigationController,
-        startDestination = "login") {
-        composable("login") { LoginScreen ( onLoginSuccess = {
-            navigationController.navigate("home"){
-                popUpTo(0)
-            }
-        } ) }
+    NavHost(
+        navController = navigationController,
+        startDestination = "login"
+    ) {
+        composable("login") {
+            LoginScreen(onLoginSuccess = {
+                navigationController.navigate("home") {
+                    popUpTo(0)
+                }
+            })
+        }
         composable("home") { Home() }
     }
 }
