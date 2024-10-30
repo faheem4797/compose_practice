@@ -14,9 +14,12 @@ import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.add
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,6 +29,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -47,6 +51,8 @@ import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
@@ -84,8 +90,10 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ChainStyle
@@ -111,11 +119,19 @@ class MainActivity : ComponentActivity() {
 
             ComposePracticeTheme {
 //NavComponenet()
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomEnd) {
-//                    Counter()
-//                    LearnFAB()
-                    LearnExtendedFAB()
-                }
+                CardMaker()
+//                Box(
+////                    modifier = Modifier.fillMaxSize(),
+////                    contentAlignment = Alignment.BottomEnd
+//                ) {
+////                    Counter()
+////                    LearnFAB()
+////                    LearnExtendedFAB()
+//
+//                    YouTubeCard(
+//                        YouTubeDataClass(R.drawable.zombatar, "Zombatar", "pheeem")
+//                    )
+//                }
             }
 
 //            ComposePracticeTheme{ NavDrawer() }
@@ -139,34 +155,100 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun LearnFAB(){
-    val context = LocalContext.current.applicationContext
-    FloatingActionButton(
-        modifier = Modifier.padding(16.dp),
-        containerColor = GreenPracticeCompose,
-        onClick = {
-            Toast.makeText(context,"FAB CLICKED", Toast.LENGTH_SHORT).show()
+fun CardMaker() {
+    val videoList = listOf(
+        YouTubeDataClass(R.drawable.zombatar, "Zombatar", "pheeem"),
+        YouTubeDataClass(R.drawable.whatsapp, "WhatsApp", "pheeem"),
+        YouTubeDataClass(R.drawable.zombatar, "Zombatar", "pheeem"),
+        YouTubeDataClass(R.drawable.whatsapp, "WhatsApp", "pheeem"),
+        YouTubeDataClass(R.drawable.zombatar, "Zombatar", "pheeem"),
+        YouTubeDataClass(R.drawable.whatsapp, "WhatsApp", "pheeem")
+
+
+
+    )
+
+    LazyColumn(Modifier.
+    fillMaxHeight().padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+        items(videoList){
+            it -> YouTubeCard(it)
         }
-    ) {
-        Icon(imageVector = Icons.Filled.Add, contentDescription = null)
     }
 }
 
 @Composable
-fun LearnExtendedFAB(){
-    val context = LocalContext.current.applicationContext
-    ExtendedFloatingActionButton (
-        modifier = Modifier.padding(16.dp),
-        containerColor = GreenPracticeCompose,
-        onClick = {
-            Toast.makeText(context," Extended FAB CLICKED", Toast.LENGTH_SHORT).show()
-        }
-    ) {
-        Icon(imageVector = Icons.Filled.Add, contentDescription = null)
-        Text("FAB")
-    }
+fun YouTubeCard(youTubeDataClass: YouTubeDataClass) {
 
+    Card(
+        modifier = Modifier
+            .padding(horizontal = 16.dp, vertical = 10.dp)
+            .fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+    ) {
+        Column(
+            modifier = Modifier.background(GreenPracticeCompose)
+        ) {
+            Image(
+                painter = painterResource(youTubeDataClass.thumbnail),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .aspectRatio(16f / 9f)
+            )
+            Column(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(18.dp)
+            ) {
+                Text(
+                    youTubeDataClass.videoTitle,
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp,
+                )
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    youTubeDataClass.channelName,
+                    color = Color.White,
+                    maxLines = 1,
+//                    fontWeight = FontWeight.Bold,
+                    fontSize = 14.sp,
+                )
+            }
+        }
+    }
 }
+
+//@Composable
+//fun LearnFAB(){
+//    val context = LocalContext.current.applicationContext
+//    FloatingActionButton(
+//        modifier = Modifier.padding(16.dp),
+//        containerColor = GreenPracticeCompose,
+//        onClick = {
+//            Toast.makeText(context,"FAB CLICKED", Toast.LENGTH_SHORT).show()
+//        }
+//    ) {
+//        Icon(imageVector = Icons.Filled.Add, contentDescription = null)
+//    }
+//}
+
+//@Composable
+//fun LearnExtendedFAB() {
+//    val context = LocalContext.current.applicationContext
+//    ExtendedFloatingActionButton(
+//        modifier = Modifier.padding(16.dp),
+//        containerColor = GreenPracticeCompose,
+//        onClick = {
+//            Toast.makeText(context, " Extended FAB CLICKED", Toast.LENGTH_SHORT).show()
+//        }
+//    ) {
+//        Icon(imageVector = Icons.Filled.Add, contentDescription = null)
+//        Text("FAB")
+//    }
+//
+//}
 
 //@Composable
 //fun Counter(myViewModel: MyViewModel = viewModel()){
