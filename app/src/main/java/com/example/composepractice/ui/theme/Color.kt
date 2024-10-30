@@ -11,3 +11,6 @@ val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
 val GreenPracticeCompose = Color(0xFF3fdc85)
+
+val MyRed = Color(0xFFCB202D)
+val MyGrey = Color(0xFFeeeefb)

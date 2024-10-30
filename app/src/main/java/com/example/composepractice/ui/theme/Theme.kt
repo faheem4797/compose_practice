@@ -17,14 +17,14 @@ import androidx.core.view.WindowCompat
 
 private val DarkColorScheme = darkColorScheme(
 //    primary = Purple80,
-    primary = GreenPracticeCompose,
-    secondary = PurpleGrey80,
+    primary = MyRed,
+    secondary = MyGrey,
     tertiary = Pink80
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
+    primary = MyRed,
+    secondary = MyGrey,
     tertiary = Pink40
 
     /* Other default colors to override
@@ -59,8 +59,8 @@ fun ComposePracticeTheme(
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.statusBarColor = GreenPracticeCompose.toArgb()
-            window.navigationBarColor = GreenPracticeCompose.toArgb()
+            window.statusBarColor = MyRed.toArgb()
+//            window.navigationBarColor = MyRed.toArgb()
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars =
                 darkTheme
         }
